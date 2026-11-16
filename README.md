@@ -40,7 +40,6 @@ Tahmin yanlışsa fotoğrafa dokunup ülke ve şehri elle düzeltebilirsin.
 
 ```bash
 npx eas-cli@latest login
-npx eas-cli@latest build:configure
 npx eas-cli@latest build --platform android --profile preview   # telefona kurulabilir APK
 npx eas-cli@latest build --platform ios                          # Apple Developer hesabı gerekir
 ```
