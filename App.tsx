@@ -110,7 +110,10 @@ function Main() {
 
       {!hasKey && (
         <Pressable style={s.warn} onPress={() => setSettingsOpen(true)}>
-          <Text style={s.warnText}>Yapay zekâ için Claude API anahtarı gerekli. Eklemek için dokun.</Text>
+          <Text style={s.warnText}>
+            Ücretsiz mod: GPS'li fotoğraflar otomatik yerleşir, GPS'sizler “Konumu bilinmeyen” bölümüne düşer.
+            Yapay zekâ için Ayarlar'dan API anahtarı ekleyebilirsin.
+          </Text>
         </Pressable>
       )}
 
@@ -222,6 +225,7 @@ function CountryView({ group, onOpen }: { group: CountryGroup; onOpen: (p: Photo
               <Pressable key={p.id} onPress={() => onOpen(p)}>
                 <Image source={{ uri: p.uri }} style={{ width: size, height: size, borderRadius: 8 }} />
                 {p.source === 'ai' && <Text style={s.badge}>🤖</Text>}
+                {p.source === 'bilinmiyor' && <Text style={s.badge}>❓</Text>}
               </Pressable>
             ))}
           </View>
@@ -244,7 +248,7 @@ function PhotoModal({ photo, onClose, onDelete, onSave }: {
     setCityText(photo?.city ?? '');
   }, [photo]);
   if (!photo) return null;
-  const sourceLabel = { gps: '📍 GPS ile bulundu', ai: '🤖 Yapay zekâ tahmini', manuel: '✏️ Elle düzenlendi' }[photo.source];
+  const sourceLabel = { gps: '📍 GPS ile bulundu', ai: '🤖 Yapay zekâ tahmini', manuel: '✏️ Elle düzenlendi', bilinmiyor: '❓ Konum bulunamadı — aşağıdan elle gir' }[photo.source];
 
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -263,7 +267,7 @@ function PhotoModal({ photo, onClose, onDelete, onSave }: {
           </Text>
           {photo.landmark ? <Text style={s.detailLine}>🏛️ {photo.landmark}</Text> : null}
           {photo.description ? <Text style={s.detailLine}>{photo.description}</Text> : null}
-          {photo.reasoning && photo.source === 'ai' ? (
+          {photo.reasoning && (photo.source === 'ai' || photo.source === 'bilinmiyor') ? (
             <Text style={[s.muted, { marginTop: 6 }]}>Gerekçe: {photo.reasoning}</Text>
           ) : null}
           {photo.takenAt ? <Text style={[s.muted, { marginTop: 6 }]}>Çekim: {photo.takenAt.replace('T', ' ')}</Text> : null}
@@ -384,8 +388,8 @@ const s = StyleSheet.create({
   title: { fontSize: 26, fontWeight: '800', color: C.text },
   back: { fontSize: 17, color: C.accent, fontWeight: '600' },
   gear: { fontSize: 22 },
-  warn: { marginHorizontal: 16, padding: 12, borderRadius: 12, backgroundColor: '#FEF3C7' },
-  warnText: { color: '#92400E' },
+  warn: { marginHorizontal: 16, padding: 12, borderRadius: 12, backgroundColor: '#E0ECFF' },
+  warnText: { color: '#1E3A8A' },
   stats: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   stat: { flex: 1, backgroundColor: C.card, borderRadius: 14, padding: 12, borderWidth: 1, borderColor: C.border },
   statValue: { fontSize: 24, fontWeight: '800', color: C.text },

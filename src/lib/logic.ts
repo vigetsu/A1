@@ -1,6 +1,9 @@
 // Saf (platformdan bağımsız) yardımcılar — birim testleri bu dosyayı doğrudan çalıştırır.
 
-export type Source = 'gps' | 'ai' | 'manuel';
+export type Source = 'gps' | 'ai' | 'manuel' | 'bilinmiyor';
+
+/** GPS'i olmayan ve yapay zekânın da bakmadığı fotoğrafların toplandığı bölüm. */
+export const UNKNOWN_COUNTRY = 'Konumu bilinmeyen';
 
 export interface Photo {
   id: number;
@@ -116,7 +119,9 @@ export function groupPhotos(photos: Photo[]): CountryGroup[] {
       cities,
     });
   }
-  return groups.sort((a, b) => b.count - a.count || a.country.localeCompare(b.country, 'tr'));
+  return groups.sort((a, b) =>
+    a.country === UNKNOWN_COUNTRY ? 1 : b.country === UNKNOWN_COUNTRY ? -1
+      : b.count - a.count || a.country.localeCompare(b.country, 'tr'));
 }
 
 /** "TR" → 🇹🇷 */

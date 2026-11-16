@@ -14,6 +14,18 @@ Gezdiğin yerlerde çektiğin fotoğrafları ekle. Uygulama her fotoğrafın **h
 
 Tahmin yanlışsa fotoğrafa dokunup ülke ve şehri elle düzeltebilirsin.
 
+### Ücretsiz mod
+
+Claude API anahtarı girmeden de kullanabilirsin; o zaman uygulama tamamen ücretsizdir:
+
+- GPS'li fotoğraflar yine otomatik olarak ülke/şehre yerleşir (telefonun harita servisi, ücretsiz).
+- GPS'siz fotoğraflar **"Konumu bilinmeyen"** bölümüne düşer; fotoğrafa dokunup konumu elle girersin.
+
+iPhone'da kamera uygulamasının konum izni açıksa (Ayarlar → Gizlilik → Konum Servisleri → Kamera)
+çektiğin fotoğrafların çoğunda GPS bilgisi bulunur. Fotoğraf seçicide bir **Seçenekler** menüsü
+görürsen oradaki **Konum** seçeneğinin açık olduğundan emin ol; kapalıysa iPhone konum bilgisini
+uygulamaya vermez.
+
 ## Özellikler
 
 - **Fotoğraf yükle** ile istediğin fotoğrafları seçip yükleme (en fazla 30) veya kamerayla çekip ekleme.

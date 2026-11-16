@@ -4,9 +4,9 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import type { ImagePickerAsset } from 'expo-image-picker';
 import * as Location from 'expo-location';
 
-import { AIUnavailable, detectLocation, type LocationGuess } from './ai';
+import { AIUnavailable, detectLocation, getApiKey, type LocationGuess } from './ai';
 import * as db from './db';
-import { gpsFromExif, takenAtFromExif, type Coords, type Photo } from './logic';
+import { gpsFromExif, takenAtFromExif, UNKNOWN_COUNTRY, type Coords, type Photo } from './logic';
 
 export type ProcessStatus = 'eklendi' | 'zaten_var' | 'hata';
 export interface ProcessResult { name: string; status: ProcessStatus; message: string }
@@ -75,17 +75,16 @@ export async function processAsset(a: ImagePickerAsset, opts: ProcessOptions): P
   const place = opts.useGps && coords ? await reverseGeocode(coords) : null;
 
   // 2) Yapay zekâ: GPS yoksa konumu bulur, varsa simge/açıklama ekler
+  //    API anahtarı yoksa yapay zekâ hiç çağrılmaz (ücretsiz mod).
   let guess: LocationGuess | null = null;
-  if (!place || opts.aiForGps) {
+  let aiError: string | null = null;
+  const aiEnabled = !!(await getApiKey());
+  if (aiEnabled && (!place || opts.aiForGps)) {
     try {
       const hint = place ? `GPS verisine göre fotoğraf ${place.city ?? ''} ${place.country} konumunda çekildi.` : undefined;
       guess = await detectLocation(saved.base64, hint);
     } catch (err) {
-      if (!place) {
-        new File(saved.uri).delete();
-        const msg = err instanceof AIUnavailable ? err.message : 'Beklenmeyen hata.';
-        return { name, status: 'hata', message: `Konum bulunamadı: ${msg}` };
-      }
+      aiError = err instanceof AIUnavailable ? err.message : 'Beklenmeyen hata.';
     }
   }
 
@@ -102,7 +101,20 @@ export async function processAsset(a: ImagePickerAsset, opts: ProcessOptions): P
     return { name, status: 'eklendi', message: `📍 ${[place.city, place.country].filter(Boolean).join(', ')}` };
   }
 
-  const g = guess!;
+  if (!guess) {
+    // Ne GPS ne yapay zekâ: kullanıcı konumu elle girer
+    await db.insertPhoto({
+      ...base, country: UNKNOWN_COUNTRY, countryCode: null, city: null,
+      source: 'bilinmiyor', confidence: null,
+      reasoning: aiError ?? 'Fotoğrafta GPS bilgisi yok.',
+    });
+    return {
+      name, status: 'eklendi',
+      message: `❓ Konum bulunamadı, elle girebilirsin${aiError ? ` (${aiError})` : ''}`,
+    };
+  }
+
+  const g = guess;
   await db.insertPhoto({
     ...base, country: g.country, countryCode: g.country_code, city: g.city,
     source: 'ai', confidence: g.confidence, reasoning: g.reasoning,

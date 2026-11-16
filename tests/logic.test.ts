@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { flag, gpsFromExif, groupPhotos, takenAtFromExif, type Photo } from '../src/lib/logic.ts';
+import { flag, gpsFromExif, groupPhotos, takenAtFromExif, UNKNOWN_COUNTRY, type Photo } from '../src/lib/logic.ts';
 
 test('iOS {GPS} exif', () => {
   const c = gpsFromExif({ '{GPS}': { Latitude: 41.8902, LatitudeRef: 'N', Longitude: 12.4922, LongitudeRef: 'E' } });
@@ -43,6 +43,11 @@ test('Ülke → Şehir gruplama', () => {
   assert.deepEqual(g.map((x) => x.country), ['İtalya', 'Japonya']);
   assert.deepEqual(g[0].cities.map((c) => c.city), ['Roma', 'Venedik', 'Diğer']);
   assert.equal(g[0].count, 4);
+});
+
+test('Konumu bilinmeyen en sona', () => {
+  const g = groupPhotos([p(1, UNKNOWN_COUNTRY, null), p(2, UNKNOWN_COUNTRY, null), p(3, 'Japonya', 'Kyoto', 'JP')]);
+  assert.deepEqual(g.map((x) => x.country), ['Japonya', UNKNOWN_COUNTRY]);
 });
 
 test('bayrak', () => {
