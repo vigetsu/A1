@@ -1,13 +1,17 @@
 {
   "expo": {
-    "name": "gezi-albumu",
+    "name": "Gezi Albümü",
     "slug": "gezi-albumu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gezialbumu.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -16,10 +20,32 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.gezialbumu.app",
+      "permissions": [
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Gezi fotoğraflarını albüme eklemek için fotoğraflarına erişim gerekiyor.",
+          "cameraPermission": "Albüme eklemek üzere fotoğraf çekmek için kamera erişimi gerekiyor.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Fotoğrafın konumunu şehir ve ülke adına çevirmek için kullanılır."
+        }
+      ]
+    ]
   }
 }
