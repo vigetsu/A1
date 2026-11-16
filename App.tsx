@@ -48,12 +48,14 @@ function Main() {
   const cityCount = new Set(photos.filter((p) => p.city).map((p) => `${p.country}|${p.city}`)).size;
 
   async function addPhotos(camera: boolean) {
-    const perm = camera
-      ? await ImagePicker.requestCameraPermissionsAsync()
-      : await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('İzin gerekli', camera ? 'Kamera izni verilmedi.' : 'Fotoğraflara erişim izni verilmedi.');
-      return;
+    // Yükleme için galeri izni istenmez: sistem seçicisi açılır ve uygulama yalnızca
+    // kullanıcının seçtiği fotoğrafları görür. Kamera için kamera izni gerekir.
+    if (camera) {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('İzin gerekli', 'Kamera izni verilmedi.');
+        return;
+      }
     }
     if (Platform.OS === 'android' && Number(Platform.Version) >= 29) {
       // Android 10+: bu izin olmadan galerideki fotoğrafların GPS bilgisi gizlenir
@@ -128,7 +130,7 @@ function Main() {
           }
           ListEmptyComponent={
             <Text style={s.empty}>
-              Albüm henüz boş.{'\n'}Aşağıdan fotoğraf ekle; yapay zekâ ülke ve şehri kendisi bulsun. ✈️
+              Albüm henüz boş.{'\n'}Aşağıdan fotoğraf yükle; yapay zekâ ülke ve şehri kendisi bulsun. ✈️
             </Text>
           }
           renderItem={({ item }) => <CountryCard group={item} onPress={() => setCountry(item.country)} />}
@@ -158,7 +160,7 @@ function Main() {
         ) : null}
         <View style={s.actions}>
           <Pressable style={[s.btn, s.btnPrimary]} onPress={() => addPhotos(false)} disabled={!!busy}>
-            <Text style={s.btnPrimaryText}>🖼️ Galeriden ekle</Text>
+            <Text style={s.btnPrimaryText}>📤 Fotoğraf yükle</Text>
           </Pressable>
           <Pressable style={s.btn} onPress={() => addPhotos(true)} disabled={!!busy}>
             <Text style={s.btnText}>📷 Çek</Text>

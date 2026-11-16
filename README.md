@@ -16,7 +16,8 @@ Tahmin yanlışsa fotoğrafa dokunup ülke ve şehri elle düzeltebilirsin.
 
 ## Özellikler
 
-- Galeriden çoklu seçim (en fazla 30) veya kamerayla çekip ekleme
+- **Fotoğraf yükle** ile istediğin fotoğrafları seçip yükleme (en fazla 30) veya kamerayla çekip ekleme.
+  Uygulama galerine erişim izni istemez; sadece senin seçtiğin fotoğrafları görür.
 - Bayraklı ülke listesi; ülkeye dokununca şehir şehir fotoğraf ızgarası
 - Fotoğraf detayı: konum, yer adı, açıklama, yapay zekâ gerekçesi, çekim tarihi
 - Elle konum düzeltme ve albümden silme (galerideki asıl fotoğraf silinmez)
@@ -67,5 +68,5 @@ npm run typecheck  # TypeScript kontrolü
 - **Maliyet:** GPS'siz her fotoğraf bir Claude çağrısıdır. Ayarlar'daki "GPS'li fotoğraflara da AI
   açıklaması ekle" seçeneğini kapatırsan GPS'li fotoğraflar ücretsiz işlenir. Fotoğraflar
   gönderilmeden önce en fazla 1568 px'e küçültülür.
-- **GPS bilgisi:** Android 10+ için uygulama "fotoğraf konumuna erişim" izni ister. iPhone'da galeri
+- **GPS bilgisi:** Android 10+ için uygulama seçtiğin fotoğrafların konumunu okuyabilmek için "fotoğraf konumuna erişim" izni ister. iPhone'da galeri
   seçici bazı fotoğrafların konum bilgisini vermeyebilir; o zaman yapay zekâ devreye girer.
